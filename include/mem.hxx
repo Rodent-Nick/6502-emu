@@ -1,9 +1,6 @@
 #pragma once
-#include <cstdint>
 #include <array>
-
-using byte = uint8_t;
-using word = uint16_t;
+#include "base.hxx"
 
 class Memory
 {

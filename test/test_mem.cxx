@@ -19,3 +19,6 @@ TEST_CASE("Memory function is intact", "[mem]") {
     }
 
 }
+
+/// There is no need to write a unit test for `Registers` because it does not
+/// include any member function.
