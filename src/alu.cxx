@@ -34,11 +34,12 @@ byte ALU::DoAddition(bool with_carry)
 
 byte ALU::DoSubtraction(bool with_carry)
 {
-    byte result = this->ar - this->br - (with_carry ? this->reg.sr[FLAG_C] : 0);
+    byte result = 
+        this->ar - this->br + 1 - (with_carry ? this->reg.sr[FLAG_C] : 0);
 
     /// Taken care of C flag
     this->reg.sr[FLAG_C] = 
-        (this->ar - this->br - (with_carry ? this->reg.sr[FLAG_C] : 0)) < 0;
+        (this->ar - this->br + 1 - (with_carry ? this->reg.sr[FLAG_C] : 0)) < 0;
 
     bool sign_res = GetByteSignBit(result);
 

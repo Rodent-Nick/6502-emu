@@ -32,4 +32,32 @@ TEST_CASE("ALU functions nominal", "[alu]"){
         REQUIRE(reg.sr[FLAG_V] == ((sign_a ^ sign_res) & (sign_b ^ sign_res)));
         REQUIRE(reg.sr[FLAG_C] == (operand_a + operand_b + flag_c) > 255);
     }
+    SECTION("Test DoSubtraction with overflow (SDC)"){
+
+        byte operand_a = GENERATE(take(128, random(0, 255)));
+        byte operand_b = GENERATE(take(128, random(0, 255)));
+        bool flag_c = GENERATE(take(2, random(0, 1)));
+
+        reg.sr[FLAG_C] = flag_c;
+        alu.ar = operand_a;
+        alu.br = operand_b;
+
+        bool sign_a = GetByteSignBit(operand_a);
+        bool sign_b = GetByteSignBit(operand_b);
+        bool sign_res = byte(operand_a - operand_b - flag_c + 1) & 0x80;
+
+        INFO("operand_a: " << int(operand_a));
+        INFO("operand_b: " << int(operand_b));
+        INFO("flag_c: " << flag_c);
+
+        REQUIRE(alu.DoSubtraction() == 
+            byte(operand_a - operand_b - flag_c + 1));
+        REQUIRE(reg.sr[FLAG_Z] == 
+            (byte(operand_a - operand_b - flag_c + 1) == 0));
+        REQUIRE(reg.sr[FLAG_N] == 
+            (byte(operand_a - operand_b - flag_c + 1) > 127));
+        REQUIRE(reg.sr[FLAG_V] == ((sign_a ^ sign_b) & (sign_a ^ sign_res)));
+        REQUIRE(reg.sr[FLAG_C] == (
+            operand_a - operand_b - flag_c + 1) < 0);
+    }
 }
