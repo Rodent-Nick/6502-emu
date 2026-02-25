@@ -1,11 +1,13 @@
 #include "catch2/catch_all.hpp"
 #include "alu.hxx"
 
-TEST_CASE("ALU functions nominal", "[alu]"){
+TEST_CASE("ALU functions nominal", "[alu]")
+{
     Registers reg{};
     ALU alu{reg};
-    SECTION("Test DoAddition with overflow (ADC)"){
-        
+    SECTION("Test DoAddition with overflow (ADC)")
+    {
+
         byte operand_a = GENERATE(take(128, random(0, 255)));
         byte operand_b = GENERATE(take(128, random(0, 255)));
         bool flag_c = GENERATE(take(2, random(0, 1)));
@@ -32,7 +34,8 @@ TEST_CASE("ALU functions nominal", "[alu]"){
         REQUIRE(reg.sr[FLAG_V] == ((sign_a ^ sign_res) & (sign_b ^ sign_res)));
         REQUIRE(reg.sr[FLAG_C] == (operand_a + operand_b + flag_c) > 255);
     }
-    SECTION("Test DoSubtraction with overflow (SDC)"){
+    SECTION("Test DoSubtraction with overflow (SDC)")
+    {
 
         byte operand_a = GENERATE(take(128, random(0, 255)));
         byte operand_b = GENERATE(take(128, random(0, 255)));
@@ -50,17 +53,17 @@ TEST_CASE("ALU functions nominal", "[alu]"){
         INFO("operand_b: " << int(operand_b));
         INFO("flag_c: " << flag_c);
 
-        REQUIRE(alu.DoSubtraction() == 
-            byte(operand_a - operand_b + flag_c - 1));
-        REQUIRE(reg.sr[FLAG_Z] == 
-            (byte(operand_a - operand_b + flag_c - 1) == 0));
-        REQUIRE(reg.sr[FLAG_N] == 
-            (byte(operand_a - operand_b + flag_c - 1) > 127));
+        REQUIRE(alu.DoSubtraction() ==
+                byte(operand_a - operand_b + flag_c - 1));
+        REQUIRE(reg.sr[FLAG_Z] ==
+                (byte(operand_a - operand_b + flag_c - 1) == 0));
+        REQUIRE(reg.sr[FLAG_N] ==
+                (byte(operand_a - operand_b + flag_c - 1) > 127));
         REQUIRE(reg.sr[FLAG_V] == ((sign_a ^ sign_b) & (sign_a ^ sign_res)));
-        REQUIRE(reg.sr[FLAG_C] == (
-            operand_a - operand_b + flag_c - 1) < 0);
+        REQUIRE(reg.sr[FLAG_C] == (operand_a - operand_b + flag_c - 1) < 0);
     }
-    SECTION("Test DoBCDAddition"){
+    SECTION("Test DoBCDAddition")
+    {
 
         // TODO Add a data generator to replace hard-coded test.
 
@@ -78,9 +81,9 @@ TEST_CASE("ALU functions nominal", "[alu]"){
         REQUIRE(reg.sr[FLAG_C] == 0);
         REQUIRE(reg.sr[FLAG_N] == 0);
         REQUIRE(reg.sr[FLAG_Z] == 0);
-
     }
-    SECTION("Test DoBCDSubtraction"){
+    SECTION("Test DoBCDSubtraction")
+    {
 
         // TODO Add a data generator to replace hard-coded test.
 
@@ -98,6 +101,5 @@ TEST_CASE("ALU functions nominal", "[alu]"){
         REQUIRE(reg.sr[FLAG_C] == 0);
         REQUIRE(reg.sr[FLAG_N] == 1);
         REQUIRE(reg.sr[FLAG_Z] == 0);
-
     }
 }

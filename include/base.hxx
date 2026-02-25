@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <stdexcept>
+#include <format>
 using byte = uint8_t;
 using word = uint16_t;
 
