@@ -3,6 +3,16 @@
 #include "base.hxx"
 #include "reg.hxx"
 
+enum ALU_NONARITH_OP{
+    OP_AND,
+    OP_ORA,
+    OP_EOR,
+    OP_ASL,
+    OP_LSR,
+    OP_ROL,
+    OP_ROR,
+};
+
 class ALU{
 
 public:
@@ -16,8 +26,9 @@ public:
     byte DoSubtraction(bool with_carry = true);
     byte DoBCDAddition(bool with_carry = true);
     byte DoBCDSubtraction(bool with_carry = true);
-    byte DoLogicalOperation();
-    byte DoShiftOrRotatioin();
+    byte DoLogicalOperation(const ALU_NONARITH_OP &op);
+    void DoBITOperation();
+    byte DoShiftOrRotatioin(const ALU_NONARITH_OP &op);
     void DoComparison();
 
 };

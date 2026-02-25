@@ -94,3 +94,78 @@ byte ALU::DoBCDSubtraction(bool with_carry)
     
     return static_cast<byte>(result);
 }
+
+byte ALU::DoLogicalOperation(const ALU_NONARITH_OP &op)
+{
+    byte result = 0x00;
+
+    switch (op) {
+        case OP_AND:
+            result = this->ar & this->br;
+        break;
+        case OP_ORA:
+            result = this->ar | this->br;
+        break;
+        case OP_EOR:
+            result = this->ar ^ this->br;
+        break;
+        default:
+            std::__throw_runtime_error("ALU invalid logical operation");
+    }
+
+    this->reg.sr[FLAG_Z] = result == 0;
+    this->reg.sr[FLAG_N] = GetByteSignBit(result);
+
+    return result;
+}
+
+void ALU::DoBITOperation()
+{
+    this->reg.sr[FLAG_Z] = (this->ar & this->br) == 0;
+    this->reg.sr[FLAG_N] = this->br & 0x80;
+    this->reg.sr[FLAG_V] = this->br & 0x40;
+}
+
+byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
+{
+    byte result = this->ar;
+
+    switch (op) {
+        case OP_ASL:
+            this->reg.sr[FLAG_C] = result & 0x80;
+            result <<= 1;
+        break;
+        case OP_LSR:
+            this->reg.sr[FLAG_C] = result & 0x01;
+            result >>= 1;
+        break;
+        case OP_ROL:
+            bool tmp = result & 0x80;
+            result <<= 1;
+            result |= this->reg.sr[FLAG_C];
+            this->reg.sr[FLAG_C] = tmp;
+        break;
+        case OP_ROR:
+            bool tmp = result & 0x01;
+            result >>= 1;
+            result |= this->reg.sr[FLAG_C] * 0x80;
+            this->reg.sr[FLAG_C] = tmp;
+        break;
+        default:
+            std::__throw_runtime_error("ALU invalid shift/rotation operation");
+    }
+
+    this->reg.sr[FLAG_N] = GetByteSignBit(result);
+    this->reg.sr[FLAG_Z] = result & 0x80;
+
+    return result;
+}
+
+void ALU::DoComparison()
+{
+    this->reg.sr[FLAG_C] = this->ar >= this->br;
+    this->reg.sr[FLAG_Z] = this->ar == this->br;
+    this->reg.sr[FLAG_N] = this->ar < this->br;
+
+    return;
+}
