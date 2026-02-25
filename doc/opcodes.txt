@@ -1,0 +1,256 @@
+BRK impl
+ORA indx
+---
+---
+---
+ORA zpg
+ASL zpg
+---
+PHP impl
+ORA #
+ASL A
+---
+---
+ORA abs
+ASL abs
+---
+BPL rel
+ORA indy
+---
+---
+---
+ORA zpgx
+ASL zpgx
+---
+CLC impl
+ORA absy
+---
+---
+---
+ORA absx
+ASL absx
+---
+JSR abs
+AND indx
+---
+---
+BIT zpg
+AND zpg
+ROL zpg
+---
+PLP impl
+AND #
+ROL A
+---
+BIT abs
+AND abs
+ROL abs
+---
+BMI rel
+AND indy
+---
+---
+---
+AND zpgx
+ROL zpgx
+---
+SEC impl
+AND absy
+---
+---
+---
+AND absx
+ROL absx
+---
+RTI impl
+EOR indx
+---
+---
+---
+EOR zpg
+LSR zpg
+---
+PHA impl
+EOR #
+LSR A
+---
+JMP abs
+EOR abs
+LSR abs
+---
+BVC rel
+EOR indy
+---
+---
+---
+EOR zpgx
+LSR zpgx
+---
+CLI impl
+EOR absy
+---
+---
+---
+EOR absx
+LSR absx
+---
+RTS impl
+ADC indx
+---
+---
+---
+ADC zpg
+ROR zpg
+---
+PLA impl
+ADC #
+ROR A
+---
+JMP ind
+ADC abs
+ROR abs
+---
+BVS rel
+ADC indy
+---
+---
+---
+ADC zpgx
+ROR zpgx
+---
+SEI impl
+ADC absy
+---
+---
+---
+ADC absx
+ROR absx
+---
+---
+STA indx
+---
+---
+STY zpg
+STA zpg
+STX zpg
+---
+DEY impl
+---
+TXA impl
+---
+STY abs
+STA abs
+STX abs
+---
+BCC rel
+STA indy
+---
+---
+STY zpgx
+STA zpgx
+STX zpgy
+---
+TYA impl
+STA absy
+TXS impl
+---
+---
+STA absx
+---
+---
+LDY #
+LDA indx
+LDX #
+---
+LDY zpg
+LDA zpg
+LDX zpg
+---
+TAY impl
+LDA #
+TAX impl
+---
+LDY abs
+LDA abs
+LDX abs
+---
+BCS rel
+LDA indy
+---
+---
+LDY zpgx
+LDA zpgx
+LDX zpgy
+---
+CLV impl
+LDA absy
+TSX impl
+---
+LDY absx
+LDA absx
+LDX absy
+---
+CPY #
+CMP indx
+---
+---
+CPY zpg
+CMP zpg
+DEC zpg
+---
+INY impl
+CMP #
+DEX impl
+---
+CPY abs
+CMP abs
+DEC abs
+---
+BNE rel
+CMP indy
+---
+---
+---
+CMP zpgx
+DEC zpgx
+---
+CLD impl
+CMP absy
+---
+---
+---
+CMP absx
+DEC absx
+---
+CPX #
+SBC indx
+---
+---
+CPX zpg
+SBC zpg
+INC zpg
+---
+INX impl
+SBC #
+NOP impl
+---
+CPX abs
+SBC abs
+INC abs
+---
+BEQ rel
+SBC indy
+---
+---
+---
+SBC zpgx
+INC zpgx
+---
+SED impl
+SBC absy
+---
+---
+---
+SBC absx
+INC absx
+---

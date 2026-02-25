@@ -1,10 +1,16 @@
 import csv as c
 instructions = []
 
-with open('opcodes.csv', 'r') as f:
-    reader = c.reader(f)
-    for line in reader:
-        instructions.append(line)
+with open('opcodes.txt', 'r') as f:
+    lines = f.readlines()
+    for i in range(len(lines)):
+
+        if lines[i].strip('\n') == '---':
+            continue
+
+        line = lines[i].split(' ')
+        print(line)
+        instructions.append(['%02X'%(i,), line[0], line[1].strip('\n')])
 
 sig_pat = 'static void Operation%s(Memory &mem, Registers &reg, ALU &alu);\n'
 def_pat = """

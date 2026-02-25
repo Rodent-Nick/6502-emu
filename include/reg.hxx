@@ -18,7 +18,8 @@ public:
     Registers();
     ~Registers();
 
-    word pc;
-    byte ac,xr,yr,sp;
+    word pc, last_addr;
+    byte ac,xr,yr,sp,cycles_remaining;
+    bool additional_cycle;
     std::bitset<8> sr{0};
 };
