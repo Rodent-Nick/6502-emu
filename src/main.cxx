@@ -242,6 +242,14 @@ int main(int argc, char** argv){
             continue;
         }
 
+        if (vec[0] == "dbg") {
+            proc.alu.show_debug = true;
+        }
+
+        if (vec[0] == "ndb") {
+            proc.alu.show_debug = false;
+        }
+
         printf("No such command: %s\n", vec[0].c_str());
 
     }

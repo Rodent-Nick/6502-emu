@@ -32,6 +32,7 @@ void Processor::ResetProcessor()
 {
     this->reg = Registers();
     this->mem.ResetMemory();
+    this->alu.ResetALU();
     return;
 }
 
@@ -1787,7 +1788,7 @@ void Processor::OperationA9(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics LDA (Address mode: #)
     byte opcode = 0xA9;
-    reg.ac = GetOperandIdX(mem, reg, reg.pc);
+    reg.ac = mem.PeekByte(reg.pc, 1);
 
     reg.sr[FLAG_N] = GetByteSignBit(reg.ac);
     reg.sr[FLAG_Z] = reg.ac == 0;

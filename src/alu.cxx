@@ -11,6 +11,8 @@ ALU::~ALU()
 
 byte ALU::DoAddition(bool with_carry)
 {
+    if (this->show_debug)
+        printf("%x+%x (C=%d)\n", this->ar, this->br, this->reg.sr[FLAG_C]);
     byte result = this->ar + this->br + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
     /// Taken care of C flag
@@ -32,6 +34,8 @@ byte ALU::DoAddition(bool with_carry)
 
 byte ALU::DoSubtraction(bool with_carry)
 {
+    if (this->show_debug)
+        printf("%x-%x (C=%d)\n", this->ar, this->br, this->reg.sr[FLAG_C]);
     byte result =
         this->ar - this->br - 1 + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
@@ -54,6 +58,8 @@ byte ALU::DoSubtraction(bool with_carry)
 
 byte ALU::DoBCDAddition(bool with_carry)
 {
+    if (this->show_debug)
+        printf("%x+%x (C=%d) BCD\n", this->ar, this->br, this->reg.sr[FLAG_C]);
     word result = this->ar + this->br + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
     if ((result & 0xf) > 0x9)
@@ -75,6 +81,8 @@ byte ALU::DoBCDAddition(bool with_carry)
 
 byte ALU::DoBCDSubtraction(bool with_carry)
 {
+    if (this->show_debug)
+        printf("%x-%x (C=%d) BCD\n", this->ar, this->br, this->reg.sr[FLAG_C]);
     word result = this->ar - this->br - 1 + 
         (with_carry ? this->reg.sr[FLAG_C] : 0);
 
@@ -97,6 +105,8 @@ byte ALU::DoBCDSubtraction(bool with_carry)
 
 byte ALU::DoLogicalOperation(const ALU_NONARITH_OP &op)
 {
+    if (this->show_debug)
+        printf("%x,%x (OP=%x) Logical\n", this->ar, this->br, op);
     byte result = 0x00;
 
     switch (op) {
@@ -121,6 +131,8 @@ byte ALU::DoLogicalOperation(const ALU_NONARITH_OP &op)
 
 void ALU::DoBITOperation()
 {
+    if (this->show_debug)
+        printf("%x,%x BIT\n", this->ar, this->br);
     this->reg.sr[FLAG_Z] = (this->ar & this->br) == 0;
     this->reg.sr[FLAG_N] = this->br & 0x80;
     this->reg.sr[FLAG_V] = this->br & 0x40;
@@ -128,6 +140,8 @@ void ALU::DoBITOperation()
 
 byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
 {
+    if (this->show_debug)
+        printf("%x,%x (OP=%x) S/R\n", this->ar, this->br, op);
     byte result = this->ar;
     bool tmp = false;
 
@@ -164,9 +178,16 @@ byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
 
 void ALU::DoComparison()
 {
+    if (this->show_debug)
+        printf("%x,%x Comparison\n", this->ar, this->br);
     this->reg.sr[FLAG_C] = this->ar >= this->br;
     this->reg.sr[FLAG_Z] = this->ar == this->br;
     this->reg.sr[FLAG_N] = this->ar < this->br;
 
     return;
+}
+
+void ALU::ResetALU()
+{
+    this->show_debug = false;
 }

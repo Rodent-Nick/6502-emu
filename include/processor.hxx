@@ -14,9 +14,10 @@ public:
     void ResetProcessor();
 
     Registers reg{};
+    ALU alu{this->reg};
 
 private:
-    ALU alu{this->reg};
+    
     Memory &mem;
     std::array<Instruction, 0xff> instructions{nullptr};
 

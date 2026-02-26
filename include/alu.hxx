@@ -18,6 +18,7 @@ class ALU{
 public:
     Registers &reg;
     byte ar, br;
+    bool show_debug = false;
 
     ALU(Registers &reg);
     ~ALU();
@@ -30,5 +31,7 @@ public:
     void DoBITOperation();
     byte DoShiftOrRotatioin(const ALU_NONARITH_OP &op);
     void DoComparison();
+
+    void ResetALU();
 
 };
