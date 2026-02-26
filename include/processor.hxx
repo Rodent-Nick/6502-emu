@@ -9,9 +9,13 @@ class Processor{
 public:
     Processor(Memory &mem);
     ~Processor();
+    bool NextCycle();
+    bool NextInstruction();
+    void ResetProcessor();
+
+    Registers reg{};
 
 private:
-    Registers reg{};
     ALU alu{this->reg};
     Memory &mem;
     std::array<Instruction, 0xff> instructions{nullptr};

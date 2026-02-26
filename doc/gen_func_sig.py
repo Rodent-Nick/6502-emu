@@ -22,6 +22,7 @@ void Processor::Operation%s(Memory &mem, Registers &reg, ALU &alu)
     return;
 }
 """
+bind_pat = 'this->instructions[0x%s] = Operation%s;\n'
 
 with open('output_sig.txt', 'w') as f:
     for inst in instructions:
@@ -30,3 +31,7 @@ with open('output_sig.txt', 'w') as f:
 with open('output_def.txt', 'w') as f:
     for inst in instructions:
         f.write(def_pat%(inst[0], inst[1], inst[2], inst[0]))
+
+with open('output_bind.txt', 'w') as f:
+    for inst in instructions:
+        f.write(bind_pat%(inst[0], inst[0]))

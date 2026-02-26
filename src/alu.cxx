@@ -129,6 +129,7 @@ void ALU::DoBITOperation()
 byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
 {
     byte result = this->ar;
+    bool tmp = false;
 
     switch (op) {
         case OP_ASL:
@@ -140,13 +141,13 @@ byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
             result >>= 1;
         break;
         case OP_ROL:
-            bool tmp = result & 0x80;
+            tmp = result & 0x80;
             result <<= 1;
             result |= this->reg.sr[FLAG_C];
             this->reg.sr[FLAG_C] = tmp;
         break;
         case OP_ROR:
-            bool tmp = result & 0x01;
+            tmp = result & 0x01;
             result >>= 1;
             result |= this->reg.sr[FLAG_C] * 0x80;
             this->reg.sr[FLAG_C] = tmp;
