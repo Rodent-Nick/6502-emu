@@ -19,6 +19,8 @@ void ShowMemory(Memory &mem, word head, byte count = 0xf){
     printf("\n");
 
     for (int line = 0; line < lines; line++){
+        if (real_head + line * 0x10 > 0xffff)
+            break;
         printf("%04X:", real_head + line * 0x10);
         for (int col = 0; col < 16; col++){
             printf(" %02X", mem.PeekByte(real_head + line * 0x10 + col));
@@ -124,12 +126,12 @@ int main(int argc, char** argv){
 
             if (vec.size() < 3) {
                 printf("Usage: setr <register> <value>\n");
-                printf("Register can be: A X Y S P SR\n");
+                printf("Register can be: a x y s p sr\n");
                 continue;
             }
 
             std::array<std::string, 6> regs = {
-                "A", "X", "Y", "S", "P", "SR"
+                "a", "x", "y", "s", "p", "sr"
             };
             auto res = std::find(regs.begin(), regs.end(), vec[1]);
 
@@ -137,7 +139,7 @@ int main(int argc, char** argv){
                 res == regs.end()
             ) {
                 printf("No such register.\n");
-                printf("Register can be: A X Y S P SR\n");
+                printf("Register can be: a x y s p sr\n");
                 continue;
             }
 
@@ -146,7 +148,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "A") {
+            if (vec[1] == "a") {
                 proc.reg.ac = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register AC set to %02x\n", 
@@ -154,7 +156,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "X") {
+            if (vec[1] == "x") {
                 proc.reg.xr = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register X set to %02x\n", 
@@ -162,7 +164,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "Y") {
+            if (vec[1] == "y") {
                 proc.reg.yr = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register Y set to %02x\n", 
@@ -170,7 +172,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "S") {
+            if (vec[1] == "s") {
                 proc.reg.sp = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register S set to %02x\n", 
@@ -178,7 +180,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "P") {
+            if (vec[1] == "p") {
                 proc.reg.pc = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register PC set to %04x\n", 
@@ -186,7 +188,7 @@ int main(int argc, char** argv){
                 continue;
             }
 
-            if (vec[1] == "SR") {
+            if (vec[1] == "sr") {
                 proc.reg.sr = std::stoul(vec[2], nullptr, 16);
                 printf(
                     "Register SR set to %02x\n", 
@@ -198,9 +200,13 @@ int main(int argc, char** argv){
 
         if (vec[0] == "showm") {
 
-            if (vec.size() < 3) {
-                printf("Usage: showm <mem-head> <size>");
+            if (vec.size() < 2) {
+                printf("Usage: showm <mem-head> <size>\n");
                 continue;
+            }
+
+            if (vec.size() == 2) {
+                vec.push_back(std::string("10"));
             }
 
             if (!std::regex_match(vec[1], hexPattern)) {
@@ -239,18 +245,56 @@ int main(int argc, char** argv){
 
         if (vec[0] == "reset") {
             proc.ResetProcessor();
+            printf("Emulator reset.\n");
             continue;
         }
 
         if (vec[0] == "dbg") {
             proc.alu.show_debug = true;
+            printf("ALU-level debug enabled.\n");
+            continue;
         }
 
         if (vec[0] == "ndb") {
             proc.alu.show_debug = false;
+            printf("ALU-level debug disabled.\n");
+            continue;
         }
 
-        printf("No such command: %s\n", vec[0].c_str());
+        if (vec[0] == "help") {
+            printf("load <file-addr> <mem-head>\n");
+            printf("\tLoad a hex file into memory location <mem-head>.\n");
+            printf("\t<mem-head> should be hexidecimal.\n");
+            printf("\n");
+            printf("setr <register> <value>\n");
+            printf("\tSet a register to a certain hexidecimal value.\n");
+            printf("\tPossible register: a x y s p sr\n");
+            printf("\n");
+            printf("showm <mem-head> <size>\n");
+            printf("\tShow the selected section of memory.\n");
+            printf("\n");
+            printf("showr <mem-head> <size>\n");
+            printf("\tShow register status.\n");
+            printf("\n");
+            printf("run\n");
+            printf("\tRun until hit a BRK ($00) instruction.\n");
+            printf("\n");
+            printf("dbg\n");
+            printf("\tEnable ALU-level debug and show information each time\n");
+            printf("\tA arithmetic/logical/comparison operation is done.\n");
+            printf("\n");
+            printf("ndb\n");
+            printf("\tDisable ALU-level debug.\n");
+            printf("\n");
+            printf("stop\n");
+            printf("\tStop the whole simulator and exit the program.\n");
+            printf("\n");
+            continue;
+        }
+
+        printf(
+            "No such command: %s\n Enter \"help\" for help\n", 
+            vec[0].c_str());
 
     }
     
