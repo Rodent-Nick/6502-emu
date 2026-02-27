@@ -345,7 +345,7 @@ void Processor::Operation01(Memory &mem, Registers &reg, ALU &alu)
 
     reg.ac = alu.DoLogicalOperation(OP_ORA);
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -360,7 +360,7 @@ void Processor::Operation05(Memory &mem, Registers &reg, ALU &alu)
 
     reg.ac = alu.DoLogicalOperation(OP_ORA);
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -372,10 +372,10 @@ void Processor::Operation06(Memory &mem, Registers &reg, ALU &alu)
 
     alu.ar = GetOperandZP(mem, reg, reg.pc);
     byte res = alu.DoShiftOrRotatioin(OP_ASL);
-    mem.PutByte(mem.PeekByte(reg.pc, 1), res);
+    mem.PutByte(reg.last_addr, res);
 
     reg.pc += 2;
-    reg.cycles_remaining = 5 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 5 - 1;
 
     return;
 }
@@ -417,7 +417,7 @@ void Processor::Operation0A(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoShiftOrRotatioin(OP_ASL);
 
     reg.pc += 1;
-    reg.cycles_remaining = 2 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 2 - 1;
 
     return;
 }
@@ -432,7 +432,7 @@ void Processor::Operation0D(Memory &mem, Registers &reg, ALU &alu)
     mem.PutByte(reg.last_addr, alu.DoLogicalOperation(OP_ORA));
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -478,7 +478,6 @@ void Processor::Operation10(Memory &mem, Registers &reg, ALU &alu)
 
     reg.pc += 2;
     reg.cycles_remaining = 2 - 1 + cycle_offset;
-    reg.additional_cycle = false;
 
     return;
 }
@@ -507,7 +506,7 @@ void Processor::Operation15(Memory &mem, Registers &reg, ALU &alu)
 
     reg.ac = alu.DoLogicalOperation(OP_ORA);
 
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
     reg.pc += 2;
 
     return;
@@ -536,7 +535,6 @@ void Processor::Operation18(Memory &mem, Registers &reg, ALU &alu)
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
-    reg.additional_cycle = false;
 
     return;
 }
@@ -548,7 +546,7 @@ void Processor::Operation19(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandAbY(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoLogicalOperation(OP_ORA));
+    reg.ac = alu.DoLogicalOperation(OP_ORA);
 
     reg.pc += 3;
     reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
@@ -560,11 +558,10 @@ void Processor::Operation1D(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics ORA (Address mode: absx)
     byte opcode = 0x1D;
-    byte addr = mem.PeekWord(reg.pc, 1) + reg.xr;
     alu.ar = reg.ac;
     alu.br = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(addr, alu.DoLogicalOperation(OP_ORA));
+    reg.ac = alu.DoLogicalOperation(OP_ORA);
 
     reg.pc += 3;
     reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
@@ -576,10 +573,9 @@ void Processor::Operation1E(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics ASL (Address mode: absx)
     byte opcode = 0x1E;
-    byte addr = mem.PeekWord(reg.pc, 1) + reg.xr;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(addr, alu.DoShiftOrRotatioin(OP_ASL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ASL));
 
     reg.pc += 3;
     reg.cycles_remaining = 7 - 1;
@@ -591,7 +587,10 @@ void Processor::Operation20(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics JSR (Address mode: abs)
     byte opcode = 0x20;
-    word addr = reg.pc + 3;
+    word addr = reg.pc + 2;
+    /// It seems that the address being pushed is [PC+2] not [PC+3].
+    /// I guess it is so because RTS increments PC by 1 byte after
+    /// it pulled [PC+2] and put it into PC.
 
     PushWord(mem, reg, addr);
 
@@ -1154,6 +1153,7 @@ void Processor::Operation60(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x60;
     reg.pc = PullWord(mem, reg);
 
+    reg.pc += 1; /// Since [PC+2] is pulled, so this is the only sensible way.
     reg.cycles_remaining = 6 - 1;
 
     return;
