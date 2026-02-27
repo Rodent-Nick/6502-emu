@@ -329,6 +329,8 @@ void Processor::Operation00(Memory &mem, Registers &reg, ALU &alu)
     PushWord(mem, reg, reg.pc + 2);
     PushByte(mem, reg, byte(reg.sr.to_ulong()) & FLAG_B);
 
+    reg.sr[FLAG_B] = true;
+
     reg.pc = int_vec;
     reg.cycles_remaining = 7 - 1;
 
@@ -606,11 +608,11 @@ void Processor::Operation21(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x21;
 
     alu.ar = reg.ac;
-    alu.br = GetOperandAbX(mem, reg, reg.pc);
+    alu.br = GetOperandIdX(mem, reg, reg.pc);
     reg.ac = alu.DoLogicalOperation(OP_AND);
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -625,7 +627,7 @@ void Processor::Operation24(Memory &mem, Registers &reg, ALU &alu)
     alu.DoBITOperation();
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -640,7 +642,7 @@ void Processor::Operation25(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_AND);
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -653,7 +655,7 @@ void Processor::Operation26(Memory &mem, Registers &reg, ALU &alu)
     alu.DoShiftOrRotatioin(OP_ROL);
 
     reg.pc += 2;
-    reg.cycles_remaining = 5 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 5 - 1;
 
     return;
 }
@@ -709,7 +711,7 @@ void Processor::Operation2C(Memory &mem, Registers &reg, ALU &alu)
     alu.DoBITOperation();
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -724,7 +726,7 @@ void Processor::Operation2D(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_AND);
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -738,7 +740,7 @@ void Processor::Operation2E(Memory &mem, Registers &reg, ALU &alu)
     mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROL));
 
     reg.pc += 3;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -798,7 +800,7 @@ void Processor::Operation35(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_AND);
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -808,7 +810,7 @@ void Processor::Operation36(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics ROL (Address mode: zpgx)
     byte opcode = 0x36;
 
-    alu.ar = GetOperandAbs(mem, reg, reg.pc);
+    alu.ar = GetOperandZPX(mem, reg, reg.pc);
     mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROL));
 
     reg.pc += 2;
@@ -901,7 +903,7 @@ void Processor::Operation41(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_EOR);
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -916,7 +918,7 @@ void Processor::Operation45(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_EOR);
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -981,7 +983,7 @@ void Processor::Operation4C(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics JMP (Address mode: abs)
     byte opcode = 0x4C;
 
-    reg.pc = mem.PeekWord(reg.pc, 1);
+    reg.pc = GetOperandAbs(mem, reg, reg.pc);
 
     reg.cycles_remaining = 3 - 1;
 
@@ -1072,7 +1074,7 @@ void Processor::Operation55(Memory &mem, Registers &reg, ALU &alu)
     reg.ac = alu.DoLogicalOperation(OP_EOR);
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1095,7 +1097,7 @@ void Processor::Operation58(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics CLI (Address mode: impl)
     byte opcode = 0x58;
-    reg.sr[FLAG_B] = false;
+    reg.sr[FLAG_I] = false;
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -1172,7 +1174,7 @@ void Processor::Operation61(Memory &mem, Registers &reg, ALU &alu)
         reg.ac = alu.DoBCDAddition();
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -1190,7 +1192,7 @@ void Processor::Operation65(Memory &mem, Registers &reg, ALU &alu)
         reg.ac = alu.DoBCDAddition();
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -1259,6 +1261,9 @@ void Processor::Operation6C(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x6C;
     word addr = mem.PeekWord(mem.PeekWord(reg.pc, 1));
 
+    /// TODO simulate the ind. vector boundary bug
+    /// see obelisk website archive NB under JMP entry.
+
     reg.pc = addr;
 
     reg.pc += 3;
@@ -1280,7 +1285,7 @@ void Processor::Operation6D(Memory &mem, Registers &reg, ALU &alu)
         reg.ac = alu.DoBCDAddition();
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1361,7 +1366,7 @@ void Processor::Operation75(Memory &mem, Registers &reg, ALU &alu)
         reg.ac = alu.DoBCDAddition();
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1385,7 +1390,7 @@ void Processor::Operation78(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics SEI (Address mode: impl)
     byte opcode = 0x78;
 
-    reg.sr[FLAG_B] = true;
+    reg.sr[FLAG_I] = true;
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
