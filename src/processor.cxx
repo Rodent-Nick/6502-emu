@@ -1,22 +1,24 @@
 #include "processor.hxx"
 
-Processor::Processor(Memory &mem): mem(mem)
+Processor::Processor(Memory &mem) : mem(mem)
 {
     this->PopulateInstructionMap();
 }
 
 Processor::~Processor()
 {
-
 }
 
 bool Processor::NextCycle()
 {
-    if (reg.cycles_remaining != 0){
+    if (reg.cycles_remaining != 0)
+    {
         reg.cycles_remaining--;
-        ///TODO Add delay timer to simulate machine cycle :)
+        /// TODO Add delay timer to simulate machine cycle :)
         return true;
-    } else {
+    }
+    else
+    {
         return NextInstruction();
     }
 }
@@ -39,10 +41,10 @@ void Processor::ResetProcessor()
 void Processor::OperationUndefined(Memory &mem, Registers &reg, ALU &alu)
 {
     byte illegal_opcode = mem.PeekByte(reg.pc);
-    std::cout 
+    std::cout
         << std::format(
-            "Illegal opcode {:02X} at {:04X}", 
-            illegal_opcode, reg.pc)
+               "Illegal opcode {:02X} at {:04X}",
+               illegal_opcode, reg.pc)
         << std::endl;
 }
 
@@ -200,7 +202,8 @@ void Processor::PopulateInstructionMap()
     this->instructions[0xFD] = OperationFD;
     this->instructions[0xFE] = OperationFE;
 
-    for (auto &i : this->instructions){
+    for (auto &i : this->instructions)
+    {
         if (i == nullptr)
             i = this->OperationUndefined;
     }
@@ -256,7 +259,7 @@ byte Processor::GetOperandZPY(Memory &mem, Registers &reg, const word &head)
 }
 
 byte Processor::GetOperandAbs(Memory &mem, Registers &reg, const word &head)
-{   
+{
     reg.additional_cycle = false;
     word addr = mem.PeekWord(head, 1);
     reg.last_addr = addr;
@@ -268,7 +271,7 @@ byte Processor::GetOperandAbX(Memory &mem, Registers &reg, const word &head)
     reg.additional_cycle = false;
     word addr = mem.PeekWord(head, 1) + reg.xr;
     reg.last_addr = addr;
-    
+
     if ((addr & 0xff00) != (mem.PeekWord(head, 1) & 0xff00))
         reg.additional_cycle = true;
 
@@ -298,7 +301,7 @@ word Processor::GetOperandInd(Memory &mem, Registers &reg, const word &head)
 byte Processor::GetOperandIdX(Memory &mem, Registers &reg, const word &head)
 {
     reg.additional_cycle = false;
-    byte offset = mem.PeekByte(head, 1) + reg.xr; 
+    byte offset = mem.PeekByte(head, 1) + reg.xr;
     word addr = mem.PeekWord(offset + 0x0000);
     reg.last_addr = addr;
     return mem.PeekByte(addr);
@@ -366,7 +369,7 @@ void Processor::Operation06(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics ASL (Address mode: zpg)
     byte opcode = 0x06;
-    
+
     alu.ar = GetOperandZP(mem, reg, reg.pc);
     byte res = alu.DoShiftOrRotatioin(OP_ASL);
     mem.PutByte(mem.PeekByte(reg.pc, 1), res);
@@ -399,7 +402,7 @@ void Processor::Operation09(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = mem.PeekByte(reg.pc, 1);
     reg.ac = alu.DoLogicalOperation(OP_ORA);
-    
+
     reg.pc += 2;
     reg.cycles_remaining = 2 - 1;
     return;
@@ -457,11 +460,15 @@ void Processor::Operation10(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_N] == false) {
+    if (reg.sr[FLAG_N] == false)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -540,7 +547,7 @@ void Processor::Operation19(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x19;
     alu.ar = reg.ac;
     alu.br = GetOperandAbY(mem, reg, reg.pc);
-    
+
     mem.PutByte(reg.last_addr, alu.DoLogicalOperation(OP_ORA));
 
     reg.pc += 3;
@@ -745,11 +752,15 @@ void Processor::Operation30(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_N] == true) {
+    if (reg.sr[FLAG_N] == true)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -869,7 +880,7 @@ void Processor::Operation40(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics RTI (Address mode: impl)
     byte opcode = 0x40;
 
-    byte sr = 
+    byte sr =
         (PullByte(mem, reg) & 0b11001111) | (reg.sr.to_ulong() & 0b00110000);
     reg.sr = sr;
     byte pc = PullWord(mem, reg);
@@ -970,7 +981,7 @@ void Processor::Operation4C(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics JMP (Address mode: abs)
     byte opcode = 0x4C;
-    
+
     reg.pc = mem.PeekWord(reg.pc, 1);
 
     reg.cycles_remaining = 3 - 1;
@@ -1015,11 +1026,15 @@ void Processor::Operation50(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_V] == false) {
+    if (reg.sr[FLAG_V] == false)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -1292,11 +1307,15 @@ void Processor::Operation70(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_V] == true) {
+    if (reg.sr[FLAG_V] == true)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -1480,7 +1499,7 @@ void Processor::Operation88(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics DEY (Address mode: impl)
     byte opcode = 0x88;
-    
+
     reg.yr -= 1;
     reg.sr[FLAG_N] = GetByteSignBit(reg.yr);
     reg.sr[FLAG_Z] = reg.yr == 0;
@@ -1553,11 +1572,15 @@ void Processor::Operation90(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_C] == false) {
+    if (reg.sr[FLAG_C] == false)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -1774,7 +1797,7 @@ void Processor::OperationA8(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0xA8;
 
     reg.yr = reg.ac;
-    
+
     reg.sr[FLAG_N] = GetByteSignBit(reg.ac);
     reg.sr[FLAG_Z] = reg.ac == 0;
 
@@ -1804,7 +1827,7 @@ void Processor::OperationAA(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics TAX (Address mode: impl)
     byte opcode = 0xAA;
     reg.xr = reg.ac;
-    
+
     reg.sr[FLAG_N] = GetByteSignBit(reg.ac);
     reg.sr[FLAG_Z] = reg.ac == 0;
 
@@ -1867,11 +1890,15 @@ void Processor::OperationB0(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_C] == true) {
+    if (reg.sr[FLAG_C] == true)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -2218,11 +2245,15 @@ void Processor::OperationD0(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_Z] == false) {
+    if (reg.sr[FLAG_Z] == false)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -2534,11 +2565,15 @@ void Processor::OperationF0(Memory &mem, Registers &reg, ALU &alu)
     byte cycle_offset = 0;
     byte org_pc = reg.pc;
 
-    if (reg.sr[FLAG_Z] == true) {
+    if (reg.sr[FLAG_Z] == true)
+    {
         cycle_offset += 1;
-        if (operand > 128){
+        if (operand > 128)
+        {
             reg.pc -= (0xff - operand + 1);
-        }else{
+        }
+        else
+        {
             reg.pc += operand;
         }
     }
@@ -2673,4 +2708,3 @@ void Processor::OperationFE(Memory &mem, Registers &reg, ALU &alu)
 
     return;
 }
-
