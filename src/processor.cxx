@@ -1595,7 +1595,6 @@ void Processor::Operation90(Memory &mem, Registers &reg, ALU &alu)
 
     reg.pc += 2;
     reg.cycles_remaining = 2 - 1 + cycle_offset;
-    reg.additional_cycle = false;
 
     return;
 }
@@ -1686,6 +1685,8 @@ void Processor::Operation9A(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x9A;
 
     reg.sp = reg.xr;
+    reg.sr[FLAG_N] = GetByteSignBit(reg.xr);
+    reg.sr[FLAG_Z] = reg.xr == 0;
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -1716,7 +1717,7 @@ void Processor::OperationA0(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.yr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 2 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 2 - 1;
 
     return;
 }
@@ -1731,7 +1732,7 @@ void Processor::OperationA1(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.ac == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -1746,7 +1747,7 @@ void Processor::OperationA2(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.xr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 2 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 2 - 1;
 
     return;
 }
@@ -1761,7 +1762,7 @@ void Processor::OperationA4(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.yr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -1776,7 +1777,7 @@ void Processor::OperationA5(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.ac == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -1791,7 +1792,7 @@ void Processor::OperationA6(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.xr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -1822,7 +1823,7 @@ void Processor::OperationA9(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.ac == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 2 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 2 - 1;
 
     return;
 }
@@ -1852,7 +1853,7 @@ void Processor::OperationAC(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.yr == 0;
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1867,7 +1868,7 @@ void Processor::OperationAD(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.ac == 0;
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1882,7 +1883,7 @@ void Processor::OperationAE(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.xr == 0;
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1943,7 +1944,7 @@ void Processor::OperationB4(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.yr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1958,7 +1959,7 @@ void Processor::OperationB5(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.ac == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1973,7 +1974,7 @@ void Processor::OperationB6(Memory &mem, Registers &reg, ALU &alu)
     reg.sr[FLAG_Z] = reg.xr == 0;
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -1982,7 +1983,7 @@ void Processor::OperationB8(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics CLV (Address mode: impl)
     byte opcode = 0xB8;
-    reg.sr[FLAG_C] = false;
+    reg.sr[FLAG_V] = false;
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -2090,7 +2091,7 @@ void Processor::OperationC1(Memory &mem, Registers &reg, ALU &alu)
     alu.DoComparison();
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -2120,7 +2121,7 @@ void Processor::OperationC5(Memory &mem, Registers &reg, ALU &alu)
     alu.DoComparison();
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -2130,8 +2131,7 @@ void Processor::OperationC6(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics DEC (Address mode: zpg)
     byte opcode = 0xC6;
     alu.ar = GetOperandZP(mem, reg, reg.pc);
-    alu.br = 0x1;
-    byte result = alu.ar + alu.br;
+    byte result = alu.ar - 0x01;
 
     mem.PutByte(reg.last_addr, result);
 
@@ -2148,8 +2148,6 @@ void Processor::OperationC8(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics INY (Address mode: impl)
     byte opcode = 0xC8;
-    alu.ar = reg.yr;
-    alu.br = 0x1;
     reg.yr += 1;
 
     reg.sr[FLAG_N] = GetByteSignBit(reg.yr);
@@ -2180,9 +2178,7 @@ void Processor::OperationCA(Memory &mem, Registers &reg, ALU &alu)
 {
     /// Mnemonics DEX (Address mode: impl)
     byte opcode = 0xCA;
-    alu.ar = reg.xr;
-    alu.br = 0x1;
-    reg.yr -= 1;
+    reg.xr -= 1;
 
     reg.sr[FLAG_N] = GetByteSignBit(reg.xr);
     reg.sr[FLAG_Z] = reg.xr == 0;
@@ -2218,7 +2214,7 @@ void Processor::OperationCD(Memory &mem, Registers &reg, ALU &alu)
     alu.DoComparison();
 
     reg.pc += 3;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -2228,8 +2224,7 @@ void Processor::OperationCE(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics DEC (Address mode: abs)
     byte opcode = 0xCE;
     alu.ar = GetOperandAbs(mem, reg, reg.pc);
-    alu.br = 0x1;
-    byte result = alu.ar + alu.br;
+    byte result = alu.ar - 0x01;
 
     mem.PutByte(reg.last_addr, result);
 
@@ -2283,7 +2278,7 @@ void Processor::OperationD1(Memory &mem, Registers &reg, ALU &alu)
     alu.DoComparison();
 
     reg.pc += 2;
-    reg.cycles_remaining = 5 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 5 - 1;
 
     return;
 }
@@ -2298,7 +2293,7 @@ void Processor::OperationD5(Memory &mem, Registers &reg, ALU &alu)
     alu.DoComparison();
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -2308,8 +2303,7 @@ void Processor::OperationD6(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics DEC (Address mode: zpgx)
     byte opcode = 0xD6;
     alu.ar = GetOperandZPX(mem, reg, reg.pc);
-    alu.br = 0x1;
-    byte result = alu.ar + alu.br;
+    byte result = alu.ar - 0x01;
 
     mem.PutByte(reg.last_addr, result);
 
@@ -2369,8 +2363,7 @@ void Processor::OperationDE(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics DEC (Address mode: absx)
     byte opcode = 0xDE;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
-    alu.br = 0x1;
-    byte result = alu.ar + alu.br;
+    byte result = alu.ar - 0x01;
 
     mem.PutByte(reg.last_addr, result);
 
@@ -2405,13 +2398,13 @@ void Processor::OperationE1(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandIdX(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
 
     reg.pc += 2;
-    reg.cycles_remaining = 6 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 6 - 1;
 
     return;
 }
@@ -2438,13 +2431,13 @@ void Processor::OperationE5(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandZP(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
 
     reg.pc += 2;
-    reg.cycles_remaining = 3 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 3 - 1;
 
     return;
 }
@@ -2489,7 +2482,7 @@ void Processor::OperationE9(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = mem.PeekByte(reg.pc, 1);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
@@ -2533,7 +2526,7 @@ void Processor::OperationED(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandAbs(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
@@ -2600,13 +2593,13 @@ void Processor::OperationF1(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandIdY(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
 
     reg.pc += 2;
-    reg.cycles_remaining = 5 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 5 - 1;
 
     return;
 }
@@ -2618,13 +2611,13 @@ void Processor::OperationF5(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandZPX(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
 
     reg.pc += 2;
-    reg.cycles_remaining = 4 - 1 + reg.additional_cycle;
+    reg.cycles_remaining = 4 - 1;
 
     return;
 }
@@ -2667,7 +2660,7 @@ void Processor::OperationF9(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandAbY(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
@@ -2685,7 +2678,7 @@ void Processor::OperationFD(Memory &mem, Registers &reg, ALU &alu)
     alu.ar = reg.ac;
     alu.br = GetOperandAbX(mem, reg, reg.pc);
 
-    if (reg.sr[FLAG_D])
+    if (!reg.sr[FLAG_D])
         reg.ac = alu.DoSubtraction();
     else
         reg.ac = alu.DoBCDSubtraction();
