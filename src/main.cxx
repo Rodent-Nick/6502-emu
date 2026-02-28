@@ -71,6 +71,7 @@ int main(int argc, char** argv){
     printf("------------------------------------------\n");
     printf("https://github.com/Rodent-Nick/6502-emu\n");
     printf("------------------------------------------\n");
+    printf("Enter \"help\" to display a list of available commands.\n");
 
     while (true) {
 

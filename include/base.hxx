@@ -11,7 +11,7 @@
 using byte = uint8_t;
 using word = uint16_t;
 
-#define VERSION_STRING "Alpha (260226A)"
+#define VERSION_STRING "1.0 (260228A)"
 
 inline bool GetByteSignBit(const byte &value){
     return value & 128;
