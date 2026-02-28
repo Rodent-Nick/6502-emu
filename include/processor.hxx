@@ -19,7 +19,7 @@ public:
 private:
     
     Memory &mem;
-    std::array<Instruction, 0xff> instructions{nullptr};
+    std::array<Instruction, 256> instructions{nullptr};
 
     static void OperationUndefined(Memory &mem, Registers &reg, ALU &alu);
     void PopulateInstructionMap();
