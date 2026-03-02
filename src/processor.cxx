@@ -377,7 +377,7 @@ void Processor::Operation06(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x06;
 
     alu.ar = GetOperandZP(mem, reg, reg.pc);
-    byte res = alu.DoShiftOrRotatioin(OP_ASL);
+    byte res = alu.DoShiftOrRotation(OP_ASL);
     mem.PutByte(reg.last_addr, res);
 
     reg.pc += 2;
@@ -420,7 +420,7 @@ void Processor::Operation0A(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x0A;
 
     alu.ar = reg.ac;
-    reg.ac = alu.DoShiftOrRotatioin(OP_ASL);
+    reg.ac = alu.DoShiftOrRotation(OP_ASL);
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -448,7 +448,7 @@ void Processor::Operation0E(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics ASL (Address mode: abs)
     byte opcode = 0x0E;
     alu.ar = GetOperandAbs(mem, reg, reg.pc);
-    byte res = alu.DoShiftOrRotatioin(OP_ASL);
+    byte res = alu.DoShiftOrRotation(OP_ASL);
 
     mem.PutByte(reg.last_addr, res);
 
@@ -524,7 +524,7 @@ void Processor::Operation16(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x16;
     alu.ar = GetOperandZPX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ASL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ASL));
 
     reg.pc += 2;
     reg.cycles_remaining = 6 - 1;
@@ -581,7 +581,7 @@ void Processor::Operation1E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x1E;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ASL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ASL));
 
     reg.pc += 3;
     reg.cycles_remaining = 7 - 1;
@@ -656,7 +656,7 @@ void Processor::Operation26(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics ROL (Address mode: zpg)
     byte opcode = 0x26;
     alu.ar = GetOperandZP(mem, reg, reg.pc);
-    alu.DoShiftOrRotatioin(OP_ROL);
+    alu.DoShiftOrRotation(OP_ROL);
 
     reg.pc += 2;
     reg.cycles_remaining = 5 - 1;
@@ -697,7 +697,7 @@ void Processor::Operation2A(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics ROL (Address mode: A)
     byte opcode = 0x2A;
     alu.ar = reg.ac;
-    reg.ac = alu.DoShiftOrRotatioin(OP_ROL);
+    reg.ac = alu.DoShiftOrRotation(OP_ROL);
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -741,7 +741,7 @@ void Processor::Operation2E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x2E;
 
     alu.ar = GetOperandAbs(mem, reg, reg.pc);
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROL));
 
     reg.pc += 3;
     reg.cycles_remaining = 6 - 1;
@@ -815,7 +815,7 @@ void Processor::Operation36(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x36;
 
     alu.ar = GetOperandZPX(mem, reg, reg.pc);
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROL));
 
     reg.pc += 2;
     reg.cycles_remaining = 6 - 1;
@@ -872,7 +872,7 @@ void Processor::Operation3E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x3E;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROL));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROL));
 
     reg.pc += 3;
     reg.cycles_remaining = 7 - 1;
@@ -933,7 +933,7 @@ void Processor::Operation46(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x46;
     alu.ar = GetOperandZP(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_LSR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_LSR));
 
     reg.pc += 2;
     reg.cycles_remaining = 5 - 1;
@@ -974,7 +974,7 @@ void Processor::Operation4A(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x4A;
     alu.ar = reg.ac;
 
-    reg.ac = alu.DoShiftOrRotatioin(OP_LSR);
+    reg.ac = alu.DoShiftOrRotation(OP_LSR);
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -1015,7 +1015,7 @@ void Processor::Operation4E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x4E;
     alu.ar = GetOperandAbs(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_LSR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_LSR));
 
     reg.pc += 3;
     reg.cycles_remaining = 6 - 1;
@@ -1089,7 +1089,7 @@ void Processor::Operation56(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x56;
     alu.ar = GetOperandZPX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_LSR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_LSR));
 
     reg.pc += 2;
     reg.cycles_remaining = 6 - 1;
@@ -1145,7 +1145,7 @@ void Processor::Operation5E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x5E;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_LSR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_LSR));
 
     reg.pc += 3;
     reg.cycles_remaining = 7 - 1;
@@ -1207,7 +1207,7 @@ void Processor::Operation66(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x66;
     alu.ar = GetOperandZP(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROR));
 
     reg.pc += 2;
     reg.cycles_remaining = 5 - 1;
@@ -1251,7 +1251,7 @@ void Processor::Operation6A(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x6A;
     alu.ar = reg.ac;
 
-    reg.ac = alu.DoShiftOrRotatioin(OP_ROR);
+    reg.ac = alu.DoShiftOrRotation(OP_ROR);
 
     reg.pc += 1;
     reg.cycles_remaining = 2 - 1;
@@ -1300,7 +1300,7 @@ void Processor::Operation6E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x6E;
     alu.ar = GetOperandAbs(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROR));
 
     reg.pc += 3;
     reg.cycles_remaining = 6 - 1;
@@ -1381,7 +1381,7 @@ void Processor::Operation76(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x76;
     alu.ar = GetOperandZPX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROR));
 
     reg.pc += 2;
     reg.cycles_remaining = 6 - 1;
@@ -1444,7 +1444,7 @@ void Processor::Operation7E(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x7E;
     alu.ar = GetOperandAbX(mem, reg, reg.pc);
 
-    mem.PutByte(reg.last_addr, alu.DoShiftOrRotatioin(OP_ROR));
+    mem.PutByte(reg.last_addr, alu.DoShiftOrRotation(OP_ROR));
 
     reg.pc += 3;
     reg.cycles_remaining = 7 - 1;

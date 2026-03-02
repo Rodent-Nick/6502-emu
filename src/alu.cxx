@@ -138,7 +138,7 @@ void ALU::DoBITOperation()
     this->reg.sr[FLAG_V] = this->br & 0x40;
 }
 
-byte ALU::DoShiftOrRotatioin(const ALU_NONARITH_OP &op)
+byte ALU::DoShiftOrRotation(const ALU_NONARITH_OP &op)
 {
     if (this->show_debug)
         printf("%x,%x (OP=%x) S/R\n", this->ar, this->br, op);

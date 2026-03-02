@@ -29,7 +29,7 @@ public:
     byte DoBCDSubtraction(bool with_carry = true);
     byte DoLogicalOperation(const ALU_NONARITH_OP &op);
     void DoBITOperation();
-    byte DoShiftOrRotatioin(const ALU_NONARITH_OP &op);
+    byte DoShiftOrRotation(const ALU_NONARITH_OP &op);
     void DoComparison();
 
     void ResetALU();
