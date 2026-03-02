@@ -1,6 +1,8 @@
 # 6502-emu
 A C++ Emulator of the famous 6502 microprocessor.
 Dedicated to a winter vacation of idling and doing nothing.
+This program is created with portability in mind. It successfully compiles on
+Ubuntu 24.04 and Windows 11, both x64.
 
 **An ongoing project from a dabbling hobbyist. Any suggestion welcomed :)**
 
