@@ -25,7 +25,9 @@ bool Processor::NextCycle()
 
 bool Processor::NextInstruction()
 {
-    bool should_proceed = mem.PeekByte(reg.pc) != 0x00;
+    bool should_proceed = mem.PeekByte(reg.pc) != 0x00; // Is it BRK?
+    should_proceed |= // Is it an undefined opcode?
+        this->instructions[mem.PeekByte(reg.pc)] == OperationUndefined;
     Instruction(this->instructions[mem.PeekByte(reg.pc)])(mem, reg, alu);
     return should_proceed;
 }
@@ -46,6 +48,8 @@ void Processor::OperationUndefined(Memory &mem, Registers &reg, ALU &alu)
                "Illegal opcode {:02X} at {:04X}",
                illegal_opcode, reg.pc)
         << std::endl;
+    reg.pc += 1; // Simulate PC behaviour.
+    return;
 }
 
 void Processor::PopulateInstructionMap()
