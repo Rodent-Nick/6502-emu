@@ -1,4 +1,5 @@
 #include <fstream>
+#include <chrono>
 
 #include "mem.hxx"
 #include "reg.hxx"
@@ -238,9 +239,20 @@ int main(int argc, char** argv){
 
         if (vec[0] == "run") {
 
+            auto start = std::chrono::high_resolution_clock::now();
+
             while (proc.NextCycle());
 
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = 
+                std::chrono::duration_cast<std::chrono::microseconds>
+                (end - start);
+
             printf("Execution hit BRK and stopped.\n");
+            printf(
+                "This execution takes %lld cycles and %lld microseconds.\n", 
+                proc.GetCycleCounter(),
+                duration);
             continue;
         }
 

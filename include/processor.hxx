@@ -12,6 +12,8 @@ public:
     bool NextCycle();
     bool NextInstruction();
     void ResetProcessor();
+    void ResetCycleCounter();
+    unsigned long long GetCycleCounter();
 
     Registers reg{};
     ALU alu{this->reg};
@@ -20,6 +22,7 @@ private:
     
     Memory &mem;
     std::array<Instruction, 256> instructions{nullptr};
+    unsigned long long counter_cycle = 0;
 
     static void OperationUndefined(Memory &mem, Registers &reg, ALU &alu);
     void PopulateInstructionMap();

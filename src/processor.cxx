@@ -11,6 +11,7 @@ Processor::~Processor()
 
 bool Processor::NextCycle()
 {
+    this->counter_cycle += 1;
     if (reg.cycles_remaining != 0)
     {
         reg.cycles_remaining--;
@@ -37,7 +38,19 @@ void Processor::ResetProcessor()
     this->reg = Registers();
     this->mem.ResetMemory();
     this->alu.ResetALU();
+    this->ResetCycleCounter();
     return;
+}
+
+void Processor::ResetCycleCounter()
+{
+    this->counter_cycle = 0;
+    return;
+}
+
+unsigned long long Processor::GetCycleCounter()
+{
+    return this->counter_cycle;
 }
 
 void Processor::OperationUndefined(Memory &mem, Registers &reg, ALU &alu)
