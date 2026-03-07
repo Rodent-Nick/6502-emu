@@ -31,6 +31,8 @@ word Memory::PeekWord(const word &address, const byte &offset)
 void Memory::PutByte(const word &address, const byte &value)
 {
     this->mem[address] = value;
+    if (this->flag_listen[address])
+        this->AddUpdate(address, value);
     return;
 }
 
@@ -38,6 +40,39 @@ void Memory::PutWord(const word &address, const word &value)
 {
     this->mem[address] = PeekHighByte(value);
     this->mem[address + 1] = PeekLowByte(value);
+    if (this->flag_listen[address])
+        this->AddUpdate(address, PeekHighByte(value));
+    if (this->flag_listen[address + 1])
+        this->AddUpdate(address + 1, PeekLowByte(value));
+    return;
+}
+
+void Memory::PutByteExt(const word &address, const byte &value)
+{
+    this->mem[address] = value;
+    return;
+}
+
+void Memory::ListenAddress(const word &address)
+{
+    this->flag_listen[address] = true;
+    return;
+}
+
+void Memory::UnListenAddress(const word &address)
+{
+    this->flag_listen[address] = false;
+    return;
+}
+
+bool Memory::GetListenFlag(const word &address)
+{
+    return this->flag_listen[address];
+}
+
+void Memory::AddUpdate(const word &address, const byte &value)
+{
+    this->message_queue.push(Update{address, value});
     return;
 }
 
