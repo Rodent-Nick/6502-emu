@@ -118,7 +118,7 @@ int main(int argc, char** argv){
                 mem.PutByte(offset++, b);
             }
 
-            printf("Load %d bytes into memory.\n", buffer.size());
+            printf("Load %ld bytes into memory.\n", buffer.size());
             continue;
 
         }
@@ -145,14 +145,14 @@ int main(int argc, char** argv){
             }
 
             if (!std::regex_match(vec[2], hexPattern)) {
-                printf("Not a hex value: %x\n", vec[2].c_str());
+                printf("Not a hex value: %s\n", vec[2].c_str());
                 continue;
             }
 
             if (vec[1] == "a") {
                 proc.reg.ac = std::stoul(vec[2], nullptr, 16);
                 printf(
-                    "Register AC set to %02x\n", 
+                    "Register AC set to %02lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -160,7 +160,7 @@ int main(int argc, char** argv){
             if (vec[1] == "x") {
                 proc.reg.xr = std::stoul(vec[2], nullptr, 16);
                 printf(
-                    "Register X set to %02x\n", 
+                    "Register X set to %02lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -168,7 +168,7 @@ int main(int argc, char** argv){
             if (vec[1] == "y") {
                 proc.reg.yr = std::stoul(vec[2], nullptr, 16);
                 printf(
-                    "Register Y set to %02x\n", 
+                    "Register Y set to %02lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -176,7 +176,7 @@ int main(int argc, char** argv){
             if (vec[1] == "s") {
                 proc.reg.sp = std::stoul(vec[2], nullptr, 16);
                 printf(
-                    "Register S set to %02x\n", 
+                    "Register S set to %02lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -184,7 +184,7 @@ int main(int argc, char** argv){
             if (vec[1] == "p") {
                 proc.reg.pc = std::stoul(vec[2], nullptr, 16);
                 printf(
-                    "Register PC set to %04x\n", 
+                    "Register PC set to %04lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -194,7 +194,7 @@ int main(int argc, char** argv){
                     std::stoul(vec[2], nullptr, 16)
                 );
                 printf(
-                    "Register SR set to %02x\n", 
+                    "Register SR set to %02lx\n", 
                     std::stoul(vec[2], nullptr, 16));
                 continue;
             }
@@ -213,12 +213,12 @@ int main(int argc, char** argv){
             }
 
             if (!std::regex_match(vec[1], hexPattern)) {
-                printf("Not a hex value: %x\n", vec[1].c_str());
+                printf("Not a hex value: %s\n", vec[1].c_str());
                 continue;
             }
 
             if (!std::regex_match(vec[2], hexPattern)) {
-                printf("Not a hex value: %x\n", vec[2].c_str());
+                printf("Not a hex value: %s\n", vec[2].c_str());
                 continue;
             }
 
