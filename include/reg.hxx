@@ -21,5 +21,8 @@ public:
     word pc, last_addr;
     byte ac,xr,yr,sp,cycles_remaining;
     bool additional_cycle;
-    std::bitset<8> sr{0};
+    std::array<bool, 8> sr{0};
+
+    byte GetStatusRegisterAsByte();
+    void SetStatusRegisterByByte(const byte &value);
 };

@@ -190,7 +190,9 @@ int main(int argc, char** argv){
             }
 
             if (vec[1] == "sr") {
-                proc.reg.sr = std::stoul(vec[2], nullptr, 16);
+                proc.reg.SetStatusRegisterByByte(
+                    std::stoul(vec[2], nullptr, 16)
+                );
                 printf(
                     "Register SR set to %02x\n", 
                     std::stoul(vec[2], nullptr, 16));

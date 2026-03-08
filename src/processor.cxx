@@ -331,7 +331,7 @@ void Processor::Operation00(Memory &mem, Registers &reg, ALU &alu)
     word int_vec = mem.PeekWord(0xfffe);
 
     PushWord(mem, reg, reg.pc + 2);
-    PushByte(mem, reg, byte(reg.sr.to_ulong()) & FLAG_B);
+    PushByte(mem, reg, reg.GetStatusRegisterAsByte() & FLAG_B);
 
     reg.sr[FLAG_B] = true;
 
@@ -391,7 +391,7 @@ void Processor::Operation08(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics PHP (Address mode: impl)
     byte opcode = 0x08;
 
-    byte sr = reg.sr.to_ulong() & FLAG_B & 0b00100000;
+    byte sr = reg.GetStatusRegisterAsByte() & FLAG_B & 0b00100000;
     PushByte(mem, reg, sr);
 
     reg.pc += 1;
@@ -669,7 +669,9 @@ void Processor::Operation28(Memory &mem, Registers &reg, ALU &alu)
     /// Mnemonics PLP (Address mode: impl)
     byte opcode = 0x28;
     byte res = PullByte(mem, reg);
-    reg.sr = (res & 0b11001111) | (byte(reg.sr.to_ulong()) & 0b00110000);
+    reg.SetStatusRegisterByByte(
+        (res & 0b11001111) | (reg.GetStatusRegisterAsByte() & 0b00110000)
+    );
 
     reg.pc += 1;
     reg.cycles_remaining = 4 - 1;
@@ -886,8 +888,9 @@ void Processor::Operation40(Memory &mem, Registers &reg, ALU &alu)
     byte opcode = 0x40;
 
     byte sr =
-        (PullByte(mem, reg) & 0b11001111) | (reg.sr.to_ulong() & 0b00110000);
-    reg.sr = sr;
+        (PullByte(mem, reg) & 0b11001111)
+        | (reg.GetStatusRegisterAsByte() & 0b00110000);
+    reg.SetStatusRegisterByByte(sr);
     byte pc = PullWord(mem, reg);
     reg.pc = pc;
 

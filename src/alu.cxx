@@ -12,7 +12,11 @@ ALU::~ALU()
 byte ALU::DoAddition(bool with_carry)
 {
     if (this->show_debug)
-        printf("%x+%x (C=%d)\n", this->ar, this->br, this->reg.sr[FLAG_C]);
+        printf(
+            "%x+%x (C=%d)\n", 
+            this->ar, 
+            this->br, 
+            bool(this->reg.sr[FLAG_C]));
     byte result = this->ar + this->br + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
     /// Taken care of C flag
@@ -35,7 +39,11 @@ byte ALU::DoAddition(bool with_carry)
 byte ALU::DoSubtraction(bool with_carry)
 {
     if (this->show_debug)
-        printf("%x-%x (C=%d)\n", this->ar, this->br, this->reg.sr[FLAG_C]);
+        printf(
+            "%x-%x (C=%d)\n", 
+            this->ar, 
+            this->br, 
+            bool(this->reg.sr[FLAG_C]));
     byte result =
         this->ar - this->br - 1 + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
@@ -59,7 +67,11 @@ byte ALU::DoSubtraction(bool with_carry)
 byte ALU::DoBCDAddition(bool with_carry)
 {
     if (this->show_debug)
-        printf("%x+%x (C=%d) BCD\n", this->ar, this->br, this->reg.sr[FLAG_C]);
+        printf(
+            "%x+%x (C=%d) BCD\n", 
+            this->ar, 
+            this->br, 
+            bool(this->reg.sr[FLAG_C]));
     word result = this->ar + this->br + (with_carry ? this->reg.sr[FLAG_C] : 0);
 
     if ((result & 0xf) > 0x9)
@@ -82,7 +94,11 @@ byte ALU::DoBCDAddition(bool with_carry)
 byte ALU::DoBCDSubtraction(bool with_carry)
 {
     if (this->show_debug)
-        printf("%x-%x (C=%d) BCD\n", this->ar, this->br, this->reg.sr[FLAG_C]);
+        printf(
+            "%x-%x (C=%d) BCD\n", 
+            this->ar, 
+            this->br, 
+            bool(this->reg.sr[FLAG_C]));
     word result = this->ar - this->br - 1 + 
         (with_carry ? this->reg.sr[FLAG_C] : 0);
 
